@@ -1,21 +1,26 @@
-// users-model.js - A mongoose model
+// posts-model.js - A mongoose model
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 module.exports = function (app) {
-  const modelName = "users";
+  const modelName = "posts";
   const mongooseClient = app.get("mongooseClient");
-  const schema = new mongooseClient.Schema(
+  const { Schema } = mongooseClient;
+  const schema = new Schema(
     {
-      email: { type: String, unique: true, lowercase: true, required: true },
-      password: { type: String, required: true },
-      name: { type: String, required: true },
-      nativeLanguage: { type: String, required: true },
-      targetLanguage: { type: String, required: true },
-      profilePictureId: String,
-      gender: { type: String },
-      age: { type: Number },
-      aboutMe: { type: String },
+      text: { type: String, required: true },
+      userId: { type: String, required: true },
+      likes: [
+        {
+          userId: { type: String, required: true },
+        },
+      ],
+      comments: [
+        {
+          text: { type: String, required: true },
+          userId: { type: String, required: true },
+        },
+      ],
     },
     {
       timestamps: true,
