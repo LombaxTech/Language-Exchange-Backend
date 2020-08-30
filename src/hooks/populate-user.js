@@ -7,20 +7,18 @@ module.exports = (options = {}) => {
     const { app, method, result, params } = context;
 
     const addUserInfo = async (post) => {
-      const user = await app.service("users").get(post.userId, params);
+      const user = await app.service("users").get(post.user, params);
       return {
         ...post,
         user,
       };
     };
 
-    // if (method === "find") {
-    //   context.result.data = await Promise.all(result.data.map(addUserInfo));
-    // } else {
-    //   context.result = await addUserInfo(result);
-    // }
-
-    return context.data;
+    if (method === "find") {
+      context.result.data = await Promise.all(result.data.map(addUserInfo));
+    } else {
+      context.result = await addUserInfo(result);
+    }
 
     return context;
   };
