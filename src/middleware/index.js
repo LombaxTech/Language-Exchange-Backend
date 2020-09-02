@@ -1,24 +1,47 @@
 const createPostModel = require("../models/posts.model");
 const createChatModel = require("../models/chat.model");
 
+const { getAllPosts, getPost, getChats } = require("./controller");
+
 module.exports = function (app) {
-  app.get("/custom-posts", async (req, res) => {
-    const Post = createPostModel(app);
-    let posts = await Post.find()
-      // .limit(1)
-      // .skip(2)
-      .populate("user", "-password -createdAt");
-    res.json(posts);
+  app.get("/custom-posts", getAllPosts(app));
+  app.get("/custom-posts/:userId", getPost(app));
+  app.get("/custom-chats/:userId", getChats(app));
+
+  app.get("/custom-chat/:chatId", async (req, res) => {
+    const { chatId } = req.params;
+    const Chat = createChatModel(app);
+
+    try {
+      const chat = await Chat.findOne({ chatId })
+        .populate("members")
+        .populate({
+          path: "messages",
+          populate: {
+            path: "sender",
+          },
+        });
+
+      res.json(chat);
+    } catch (error) {
+      res.json(error);
+    }
   });
 
-  app.get("/custom-posts/:userId", async (req, res) => {
-    const Post = createPostModel(app);
+  app.post("/message", async (req, res) => {
+    const Chat = createChatModel(app);
+    const { text, sender, chatId } = req.body;
 
-    const { userId } = req.params;
+    const message = { text, sender };
 
-    let posts = await Post.find({ user: userId }).populate("user", "-password");
-    res.json(posts);
+    try {
+      const chat = await Chat.findOne({ chatId });
+      chat.messages.push(message);
+
+      let result = await chat.save();
+      res.json(result);
+    } catch (error) {
+      res.json(error);
+    }
   });
-
-  // app.post("/send-message", )
 };

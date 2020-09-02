@@ -11,16 +11,19 @@ module.exports = function (app) {
       chatId: { type: String, required: true, unique: true },
       members: [
         {
-          user: {
-            type: mongooseClient.ObjectId,
-            ref: "users",
-          },
+          type: mongooseClient.ObjectId,
+          ref: "users",
         },
       ],
       messages: [
         {
-          text: String,
-          senderId: { type: String, required: true },
+          type: new Schema(
+            {
+              text: String,
+              sender: { type: mongooseClient.ObjectId, ref: "users" },
+            },
+            { timestamps: true }
+          ),
         },
       ],
     },
