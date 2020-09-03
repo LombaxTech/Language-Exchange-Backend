@@ -39,7 +39,12 @@ app.configure(express.rest());
 app.configure(
   socketio((io) => {
     io.on("connection", (socket) => {
-      socket.emit("connected", "helloooooo");
+      // socket.emit("connected", "helloooooo");
+
+      socket.on("post", (post) => {
+        console.log(post);
+        socket.broadcast.emit("write post", post);
+      });
     });
   })
 );

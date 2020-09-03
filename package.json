@@ -52,14 +52,14 @@
     "feathers-populate-hook": "^0.5.3",
     "helmet": "^3.23.3",
     "mongodb-core": "^3.2.7",
-    "mongoose": "^5.10.0",
+    "mongoose": "^5.10.2",
     "serve-favicon": "^2.5.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "axios": "^0.20.0",
-    "eslint": "^7.7.0",
-    "jest": "^26.4.1",
+    "eslint": "^7.8.1",
+    "jest": "^26.4.2",
     "nodemon": "^2.0.4"
   }
 }
