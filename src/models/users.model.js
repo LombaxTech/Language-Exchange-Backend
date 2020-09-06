@@ -13,6 +13,8 @@ module.exports = function (app) {
       nativeLanguage: { type: String, required: true },
       targetLanguage: { type: String, required: true },
       profilePictureId: String,
+      following: [{ type: mongooseClient.ObjectId, ref: "users" }],
+      followers: [{ type: mongooseClient.ObjectId, ref: "users" }],
       gender: { type: String },
       age: { type: Number },
       aboutMe: { type: String },

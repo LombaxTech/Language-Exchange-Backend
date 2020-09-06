@@ -1,5 +1,6 @@
 const createPostModel = require("../models/posts.model");
 const createChatModel = require("../models/chat.model");
+const createUserModel = require("../models/users.model");
 
 exports.getAllPosts = (app) => async (req, res) => {
   const Post = createPostModel(app);
@@ -38,4 +39,20 @@ exports.getChats = (app) => async (req, res) => {
   // });
 
   res.json(chats);
+};
+
+exports.getPopulatedUser = (app) => async (req, res) => {
+  const { userId } = req.params;
+  const User = createUserModel(app);
+
+  try {
+    let user = await User.findOne({ _id: userId }, "-password").populate(
+      "followers following",
+      "-password"
+    );
+    // .populate("following");
+    res.json(user);
+  } catch (error) {
+    res.json(error);
+  }
 };
