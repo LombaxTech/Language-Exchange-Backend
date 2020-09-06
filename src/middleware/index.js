@@ -73,4 +73,27 @@ module.exports = function (app) {
       res.json(error);
     }
   });
+
+  app.post("/unfollow", async (req, res) => {
+    // user is unfollowing partner
+    const { userId, partnerId } = req.body;
+
+    const User = createUserModel(app);
+
+    try {
+      let user = await User.findOne({ _id: userId });
+      let partner = await User.findOne({ _id: partnerId });
+
+      user.following.pull(partner._id);
+      partner.followers.pull(user._id);
+      // return res.json(result);
+
+      let userResult = await user.save();
+      let partnerResult = await partner.save();
+
+      res.json({ userResult, partnerResult });
+    } catch (error) {
+      res.json(error);
+    }
+  });
 };
