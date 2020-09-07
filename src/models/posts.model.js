@@ -15,6 +15,7 @@ module.exports = function (app) {
         ref: "users",
         required: true,
       },
+      language: { type: String, required: true },
       likes: [
         {
           userId: { type: String, required: true },

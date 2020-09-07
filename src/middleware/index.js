@@ -7,11 +7,13 @@ const {
   getPost,
   getChats,
   getPopulatedUser,
+  getPostsOfLanguage,
 } = require("./controller");
 
 module.exports = function (app) {
   app.get("/custom-posts", getAllPosts(app));
-  app.get("/custom-posts/:userId", getPost(app));
+  app.get("/custom-posts/:language", getPostsOfLanguage(app));
+  app.get("/custom-post/:userId", getPost(app));
   app.get("/custom-chats/:userId", getChats(app));
   app.get("/custom-user/:userId", getPopulatedUser(app));
 

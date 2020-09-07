@@ -56,3 +56,15 @@ exports.getPopulatedUser = (app) => async (req, res) => {
     res.json(error);
   }
 };
+
+exports.getPostsOfLanguage = (app) => async (req, res) => {
+  const { language } = req.params;
+  const Post = createPostModel(app);
+
+  try {
+    let posts = await Post.find({ language }).populate("user");
+    res.json(posts);
+  } catch (error) {
+    res.json(error);
+  }
+};
