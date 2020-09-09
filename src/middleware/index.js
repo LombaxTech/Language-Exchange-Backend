@@ -4,16 +4,20 @@ const createUserModel = require("../models/users.model");
 
 const {
   getAllPosts,
-  getPost,
+  getPosts,
   getChats,
   getPopulatedUser,
   getPostsOfLanguage,
+  getPaginatedPosts,
+  getPaginatedAllPosts,
 } = require("./controller");
 
 module.exports = function (app) {
   app.get("/custom-posts", getAllPosts(app));
+  app.get("/custom-posts/paginate/:skip/:limit", getPaginatedAllPosts(app));
   app.get("/custom-posts/:language", getPostsOfLanguage(app));
-  app.get("/custom-post/:userId", getPost(app));
+  app.get("/custom-posts/user/:userId", getPosts(app));
+  app.get("/custom-posts/user/:userId/:skip/:limit", getPaginatedPosts(app));
   app.get("/custom-chats/:userId", getChats(app));
   app.get("/custom-user/:userId", getPopulatedUser(app));
 
@@ -94,6 +98,28 @@ module.exports = function (app) {
       let partnerResult = await partner.save();
 
       res.json({ userResult, partnerResult });
+    } catch (error) {
+      res.json(error);
+    }
+  });
+
+  app.post("/custom-post/:postId/like", async (req, res) => {
+    const Post = createPostModel(app);
+    const { likerId } = req.body;
+    const { postId } = req.params;
+    try {
+      let post = await Post.findOne({ _id: postId });
+      if (post.likes.includes(likerId)) {
+        // let like = post.likes.id(likerId);
+        // return res.json(like);
+        post.likes.pull(likerId);
+        let result = await post.save();
+        return res.json({ result });
+      }
+
+      post.likes.push(likerId);
+      let result = await post.save();
+      return res.json(result);
     } catch (error) {
       res.json(error);
     }

@@ -18,7 +18,9 @@ module.exports = function (app) {
       language: { type: String, required: true },
       likes: [
         {
-          userId: { type: String, required: true },
+          type: mongooseClient.ObjectId,
+          ref: "users",
+          required: true,
         },
       ],
       comments: [

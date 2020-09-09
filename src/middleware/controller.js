@@ -11,12 +11,40 @@ exports.getAllPosts = (app) => async (req, res) => {
   res.json(posts);
 };
 
-exports.getPost = (app) => async (req, res) => {
+exports.getPosts = (app) => async (req, res) => {
   const Post = createPostModel(app);
-
   const { userId } = req.params;
+  try {
+    let posts = await Post.find({ user: userId }).populate("user", "-password");
+    res.json(posts);
+  } catch (error) {
+    res.json(error);
+  }
+};
 
-  let posts = await Post.find({ user: userId }).populate("user", "-password");
+exports.getPaginatedPosts = (app) => async (req, res) => {
+  const Post = createPostModel(app);
+  let { userId, skip, limit } = req.params;
+  skip = parseInt(skip);
+  limit = parseInt(limit);
+
+  let posts = await Post.find({ user: userId })
+    .populate("user", "-password")
+    .limit(limit)
+    .skip(skip);
+  res.json(posts);
+};
+
+exports.getPaginatedAllPosts = (app) => async (req, res) => {
+  const Post = createPostModel(app);
+  let { skip, limit } = req.params;
+  skip = parseInt(skip);
+  limit = parseInt(limit);
+
+  let posts = await Post.find()
+    .populate("user", "-password")
+    .limit(limit)
+    .skip(skip);
   res.json(posts);
 };
 
