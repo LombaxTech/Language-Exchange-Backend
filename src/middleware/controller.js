@@ -96,3 +96,142 @@ exports.getPostsOfLanguage = (app) => async (req, res) => {
     res.json(error);
   }
 };
+
+exports.likePost = (app) => async (req, res) => {
+  const Post = createPostModel(app);
+  const { likerId } = req.body;
+  const { postId } = req.params;
+  try {
+    let post = await Post.findOne({ _id: postId });
+    if (post.likes.includes(likerId)) {
+      // let like = post.likes.id(likerId);
+      // return res.json(like);
+      post.likes.pull(likerId);
+      let result = await post.save();
+      return res.json({ result });
+    }
+
+    post.likes.push(likerId);
+    let result = await post.save();
+    return res.json(result);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getOneChat = (app) => async (req, res) => {
+  const Post = createPostModel(app);
+  const { likerId } = req.body;
+  const { postId } = req.params;
+  try {
+    let post = await Post.findOne({ _id: postId });
+    if (post.likes.includes(likerId)) {
+      // let like = post.likes.id(likerId);
+      // return res.json(like);
+      post.likes.pull(likerId);
+      let result = await post.save();
+      return res.json({ result });
+    }
+
+    post.likes.push(likerId);
+    let result = await post.save();
+    return res.json(result);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.sendMessage = (app) => async (req, res) => {
+  const Chat = createChatModel(app);
+  const { text, sender, chatId } = req.body;
+
+  const message = { text, sender };
+
+  try {
+    const chat = await Chat.findOne({ chatId });
+    chat.messages.push(message);
+
+    let result = await chat.save();
+    res.json(result);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.follow = (app) => async (req, res) => {
+  // user is following partner
+  const { userId, partnerId } = req.body;
+
+  const User = createUserModel(app);
+
+  try {
+    let user = await User.findOne({ _id: userId });
+    let partner = await User.findOne({ _id: partnerId });
+
+    user.following.push(partnerId);
+    partner.followers.push(userId);
+
+    let userResult = await user.save();
+    let partnerResult = await partner.save();
+
+    res.json({ userResult, partnerResult });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.unfollow = (app) => async (req, res) => {
+  // user is unfollowing partner
+  const { userId, partnerId } = req.body;
+
+  const User = createUserModel(app);
+
+  try {
+    let user = await User.findOne({ _id: userId });
+    let partner = await User.findOne({ _id: partnerId });
+
+    user.following.pull(partner._id);
+    partner.followers.pull(user._id);
+    // return res.json(result);
+
+    let userResult = await user.save();
+    let partnerResult = await partner.save();
+
+    res.json({ userResult, partnerResult });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.comment = (app) => async (req, res) => {
+  const Post = createPostModel(app);
+  const { userId, text } = req.body;
+  const { postId } = req.params;
+  try {
+    let post = await Post.findOne({ _id: postId });
+    let comment = {
+      text,
+      user: userId,
+    };
+    post.comments.push(comment);
+    let result = await post.save();
+    return res.json(result);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.removeComment = (app) => async (req, res) => {
+  const Post = createPostModel(app);
+  const { commentId } = req.body;
+  const { postId } = req.params;
+  try {
+    let post = await Post.findOne({ _id: postId });
+    let comment = post.comments.id(commentId);
+    comment.remove();
+    let result = await post.save();
+    return res.json(result);
+  } catch (error) {
+    res.json(error);
+  }
+};

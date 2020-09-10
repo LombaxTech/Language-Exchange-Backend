@@ -26,7 +26,7 @@ module.exports = function (app) {
       comments: [
         {
           text: { type: String, required: true },
-          userId: { type: String, required: true },
+          user: { type: mongooseClient.ObjectId, ref: "users", required: true },
         },
       ],
     },
