@@ -17,6 +17,7 @@ const {
   unfollow,
   comment,
   removeComment,
+  getPopulatedPost,
 } = require("./controller");
 
 module.exports = function (app) {
@@ -31,6 +32,7 @@ module.exports = function (app) {
   app.post("/message", sendMessage(app));
   app.post("/follow", follow(app));
   app.post("/unfollow", unfollow(app));
+  app.get("/custom-post/:postId", getPopulatedPost(app));
   app.post("/custom-post/:postId/like", likePost(app));
   app.post("/custom-post/:postId/comment", comment(app));
   app.post("/custom-post/:postId/comment/remove", removeComment(app));

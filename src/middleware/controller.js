@@ -69,6 +69,18 @@ exports.getChats = (app) => async (req, res) => {
   res.json(chats);
 };
 
+exports.getOneChat = (app) => async (req, res) => {
+  const Chat = createChatModel(app);
+  const { chatId } = req.params;
+
+  try {
+    let chat = await Chat.findOne({ chatId });
+    res.json(chat);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
 exports.getPopulatedUser = (app) => async (req, res) => {
   const { userId } = req.params;
   const User = createUserModel(app);
@@ -98,28 +110,6 @@ exports.getPostsOfLanguage = (app) => async (req, res) => {
 };
 
 exports.likePost = (app) => async (req, res) => {
-  const Post = createPostModel(app);
-  const { likerId } = req.body;
-  const { postId } = req.params;
-  try {
-    let post = await Post.findOne({ _id: postId });
-    if (post.likes.includes(likerId)) {
-      // let like = post.likes.id(likerId);
-      // return res.json(like);
-      post.likes.pull(likerId);
-      let result = await post.save();
-      return res.json({ result });
-    }
-
-    post.likes.push(likerId);
-    let result = await post.save();
-    return res.json(result);
-  } catch (error) {
-    res.json(error);
-  }
-};
-
-exports.getOneChat = (app) => async (req, res) => {
   const Post = createPostModel(app);
   const { likerId } = req.body;
   const { postId } = req.params;
@@ -231,6 +221,26 @@ exports.removeComment = (app) => async (req, res) => {
     comment.remove();
     let result = await post.save();
     return res.json(result);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getPopulatedPost = (app) => async (req, res) => {
+  const { postId } = req.params;
+  const Post = createPostModel(app);
+  try {
+    let post = await Post.findOne({ _id: postId })
+      .populate("user", "-password -createdAt -updatedAt -__v")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+        },
+      });
+
+    if (!post) return res.json({ error: "no post found" });
+    res.json(post);
   } catch (error) {
     res.json(error);
   }
