@@ -74,7 +74,13 @@ exports.getOneChat = (app) => async (req, res) => {
   const { chatId } = req.params;
 
   try {
-    let chat = await Chat.findOne({ chatId });
+    let chat = await Chat.findOne({ chatId }).populate({
+      path: "messages",
+      populate: {
+        path: "sender",
+        select: "profilePictureId _id",
+      },
+    });
     res.json(chat);
   } catch (error) {
     res.json(error);
