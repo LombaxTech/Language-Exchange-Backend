@@ -18,6 +18,7 @@ const channels = require("./channels");
 const authentication = require("./authentication");
 
 const mongoose = require("./mongoose");
+const { copyFileSync } = require("fs");
 
 const app = express(feathers());
 
@@ -41,9 +42,20 @@ app.configure(
     io.on("connection", (socket) => {
       // socket.emit("connected", "helloooooo");
 
+      socket.on("join room", (e) => socket.join(e));
+
       socket.on("post", (post) => {
         console.log(post);
         socket.broadcast.emit("write post", post);
+      });
+
+      // socket.on("message", (details) => {
+      //   console.log(details);
+      //   io.emit("message", details);
+      // });
+
+      socket.on("message", (e) => {
+        io.to(e.roomName).emit("message", e);
       });
     });
   })
