@@ -119,6 +119,8 @@ exports.likePost = (app) => async (req, res) => {
   const Post = createPostModel(app);
   const { likerId } = req.body;
   const { postId } = req.params;
+
+  // return res.json({ likerId });
   try {
     let post = await Post.findOne({ _id: postId });
     if (post.likes.includes(likerId)) {
@@ -126,7 +128,7 @@ exports.likePost = (app) => async (req, res) => {
       // return res.json(like);
       post.likes.pull(likerId);
       let result = await post.save();
-      return res.json({ result });
+      return res.json(result);
     }
 
     post.likes.push(likerId);

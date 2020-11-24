@@ -40,23 +40,16 @@ app.configure(express.rest());
 app.configure(
   socketio((io) => {
     io.on("connection", (socket) => {
-      // socket.emit("connected", "helloooooo");
-
       socket.on("join room", (e) => socket.join(e));
-
-      socket.on("post", (post) => {
-        console.log(post);
-        socket.broadcast.emit("write post", post);
-      });
+      // socket.on("join room", (e) => console.log(e));
+      socket.on("message", (e) => io.to(e.roomName).emit("message", e));
+      socket.on("post", (post) => socket.broadcast.emit("write post", post));
+      socket.on("like", (e) => io.to(e.roomName).emit("like", e));
 
       // socket.on("message", (details) => {
       //   console.log(details);
       //   io.emit("message", details);
       // });
-
-      socket.on("message", (e) => {
-        io.to(e.roomName).emit("message", e);
-      });
     });
   })
 );
