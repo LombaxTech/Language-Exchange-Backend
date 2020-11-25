@@ -25,8 +25,17 @@ module.exports = function (app) {
       ],
       comments: [
         {
-          text: { type: String, required: true },
-          user: { type: mongooseClient.ObjectId, ref: "users", required: true },
+          type: new Schema(
+            {
+              text: { type: String, required: true },
+              user: {
+                type: mongooseClient.ObjectId,
+                ref: "users",
+                required: true,
+              },
+            },
+            { timestamps: true }
+          ),
         },
       ],
     },
