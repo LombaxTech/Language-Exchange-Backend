@@ -45,7 +45,9 @@ app.configure(
       socket.on("message", (e) => io.to(e.roomName).emit("message", e));
       socket.on("post", (post) => socket.broadcast.emit("write post", post));
       socket.on("like", (e) => io.to(e.roomName).emit("like", e));
-      socket.on("comment", (details) => io.emit("comment", details));
+      socket.on("comment", ({ currentUser, result }) =>
+        io.emit("comment", { currentUser, result })
+      );
       // socket.on("message", (details) => {
       //   console.log(details);
       //   io.emit("message", details);

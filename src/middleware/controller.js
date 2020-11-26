@@ -218,6 +218,12 @@ exports.comment = (app) => async (req, res) => {
     };
     post.comments.push(comment);
     let result = await post.save();
+    result = await Post.findOne({ _id: postId }).populate({
+      path: "comments",
+      populate: {
+        path: "user",
+      },
+    });
     // result = { ...result, user: post.user };
     return res.json(result);
   } catch (error) {
