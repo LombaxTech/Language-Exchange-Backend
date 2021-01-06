@@ -25,5 +25,5 @@
       "passwordField": "password"
     }
   },
-  "mongodb": "mongodb://user:pass123@ds149138.mlab.com:49138/ht-clone-db"
+  "mongodb": "mongodb+srv://user:password123!@cluster0.etbio.mongodb.net/test?retryWrites=true&w=majority"
 }
