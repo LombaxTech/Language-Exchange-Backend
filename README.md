@@ -28,3 +28,12 @@ Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com
    ```
    npm start
    ```
+   
+   
+├───hooks 
+├──middleware
+├───models
+└───services
+    ├───chat
+    ├───posts
+    └───users
